@@ -31,12 +31,28 @@ namespace TravelAgencyBackend.Presentation.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterModel model)
         {
+            // Validate the input model
             var validationResult = await _registerValidator.ValidateAsync(model);
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors);
             }
 
+            // Check if the email is null or empty
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                return BadRequest(new { Message = "Email cannot be null or empty." });
+            }
+
+            // Check if a user with the same email already exists
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
+            {
+                // User with the same email already exists
+                return BadRequest(new { Message = "A user with the provided email already exists." });
+            }
+
+            // Create a new ApplicationUser instance
             var user = new ApplicationUser
             {
                 FirstName = model.FirstName,
@@ -49,19 +65,26 @@ namespace TravelAgencyBackend.Presentation.Controllers
                 City = model.City,
                 State = model.State,
                 Country = model.Country,
-                PostalCode = model.PostalCode
+                PostalCode = model.PostalCode,
+                PassportNumber = model.PassportNumber,
+                PreferredLanguage = model.PreferredLanguage
             };
 
+            // Attempt to create the new user
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                return Ok(new { Message = "Register Successful" });
+                return Ok(new { Message = "Registration successful." });
             }
             else
             {
-                return BadRequest(result.Errors);
+                // Handle other registration errors
+                var errorMessages = result.Errors.Select(e => e.Description);
+                return BadRequest(errorMessages);
             }
         }
+
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel model)
@@ -72,12 +95,27 @@ namespace TravelAgencyBackend.Presentation.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
+            // Check if email or password is null
+            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            {
+                return BadRequest(new { Message = "Email or password cannot be null or empty." });
+            }
+
+            // Attempt to find user by email
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return Unauthorized(new { Message = "Invalid email or password." });
+            }
+
+            // Attempt to sign in
             var result = await _signInManager.PasswordSignInAsync(
                 model.Email,
                 model.Password,
                 false,
                 false
             );
+
             if (result.Succeeded)
             {
                 return Ok(new { Message = "Login successful." });
@@ -87,6 +125,8 @@ namespace TravelAgencyBackend.Presentation.Controllers
                 return Unauthorized(new { Message = "Invalid email or password." });
             }
         }
+
+
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
