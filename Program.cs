@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using TravelAgencyBackend.Data;
 using TravelAgencyBackend.Models;
 using TravelAgencyBackend.validators;
+using TravelAgencyBackend.Validators; // Added namespace for validators
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +19,11 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// Inject Fluent Validation
+// Inject Fluent Validation for LoginModel
 builder.Services.AddScoped<IValidator<LoginModel>, LoginValidator>();
+
+// Inject Fluent Validation for RegisterModel
+builder.Services.AddScoped<IValidator<RegisterModel>, RegisterValidator>();
 
 // Add authorization services
 builder.Services.AddAuthorization();
