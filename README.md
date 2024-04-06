@@ -1,4 +1,4 @@
-﻿# Travel Agency Backend
+﻿# Travel Agency Backend (.NET 8)
 
 This project is a backend API for a travel agency, providing authentication features such as user registration, login, and logout. It also supports booking flights and hotels, similar to popular travel booking platforms like Booking.com. It is built using ASP.NET Core with Entity Framework Core for data access and ASP.NET Core Identity for user management.
 
