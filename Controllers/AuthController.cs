@@ -58,11 +58,11 @@ namespace TravelAgencyBackend.Controllers
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
             if (result.Succeeded)
             {
-                return Ok();
+                return Ok(new { Message = "Login successful." });
             }
             else
             {
-                return Unauthorized();
+                return Unauthorized(new { Message = "Invalid email or password." });
             }
         }
 
