@@ -22,6 +22,55 @@ To get started with the project, follow these steps:
 
 The application will start listening on the specified port (typically port 5000) and you can now access the API endpoints.
 
+## Project Structure
+```
+TravelAgencyBackend/
+│
+├── Application/
+│   ├── UseCases/
+│   │   ├── Auth/
+│   │   │   ├── Login/
+│   │   │   │   ├── LoginRequest.cs
+│   │   │   │   ├── LoginResponse.cs
+│   │   │   │   ├── ILoginUseCase.cs
+│   │   │   │   └── LoginUseCase.cs
+│   │   │   └── Register/
+│   │   │       ├── RegisterRequest.cs
+│   │   │       ├── RegisterResponse.cs
+│   │   │       ├── IRegisterUseCase.cs
+│   │   │       └── RegisterUseCase.cs
+│   │   └── ... (Other use cases)
+│   └── Interfaces/
+│       ├── Repositories/
+│       │   └── IUserRepository.cs
+│       └── Services/
+│           ├── IAuthService.cs
+│           └── IEmailService.cs
+│
+├── Domain/
+│   ├── Entities/
+│   │   └── User.cs
+│   └── Exceptions/
+│
+├── Infrastructure/
+│   ├── Persistence/
+│   │   ├── ApplicationDbContext.cs
+│   │   ├── UserRepository.cs
+│   │   └── ... (Other repository implementations)
+│   ├── Services/
+│   │   ├── AuthService.cs
+│   │   └── EmailService.cs
+│   └── ... (Other infrastructure implementations)
+│
+├── Presentation/
+│   ├── Controllers/
+│   │   └── AuthController.cs
+│   └── ... (Other presentation components)
+│
+├── appsettings.json
+└── Program.cs
+```
+
 ## API Endpoints
 
 ### Authentication

@@ -1,4 +1,4 @@
-﻿namespace TravelAgencyBackend.Models
+﻿namespace TravelAgencyBackend.Presentation.Models
 {
     public class LoginModel
     {

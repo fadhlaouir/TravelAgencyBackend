@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using TravelAgencyBackend.Models;
+using TravelAgencyBackend.Presentation.Models;
 
-namespace TravelAgencyBackend.validators
+namespace TravelAgencyBackend.Application.Validators
 {
     public class LoginValidator : AbstractValidator<LoginModel>
     {
@@ -11,12 +11,13 @@ namespace TravelAgencyBackend.validators
                 .NotEmpty()
                 .WithMessage("Email is required")
                 .EmailAddress()
-                .WithMessage("Should be a valid email address format");
+                .WithMessage("Invalid email address format");
+
             RuleFor(login => login.Password)
                 .NotEmpty()
                 .WithMessage("Password is required")
                 .MinimumLength(5)
-                .WithMessage("Minimum Length 5");
+                .WithMessage("Password must be at least 5 characters long");
         }
     }
 }

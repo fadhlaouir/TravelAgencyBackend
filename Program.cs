@@ -1,12 +1,14 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using TravelAgencyBackend.Data;
-using TravelAgencyBackend.Models;
-using TravelAgencyBackend.validators;
-using TravelAgencyBackend.Validators; // Added namespace for validators
+using TravelAgencyBackend.Application.Interfaces.Services;
+using TravelAgencyBackend.Application.Validators;
+using TravelAgencyBackend.Domain.Entities;
+using TravelAgencyBackend.Infrastructure.Persistence;
+using TravelAgencyBackend.Infrastructure.Services;
+using TravelAgencyBackend.Presentation.Controllers;
+using TravelAgencyBackend.Presentation.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
@@ -24,6 +26,9 @@ builder.Services.AddScoped<IValidator<LoginModel>, LoginValidator>();
 
 // Inject Fluent Validation for RegisterModel
 builder.Services.AddScoped<IValidator<RegisterModel>, RegisterValidator>();
+
+// Add application services
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Add authorization services
 builder.Services.AddAuthorization();

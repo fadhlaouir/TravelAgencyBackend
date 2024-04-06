@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using TravelAgencyBackend.Models;
+using TravelAgencyBackend.Presentation.Models;
 
-namespace TravelAgencyBackend.Validators
+namespace TravelAgencyBackend.Application.Validators
 {
     public class RegisterValidator : AbstractValidator<RegisterModel>
     {

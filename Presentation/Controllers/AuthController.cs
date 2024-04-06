@@ -1,21 +1,26 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using TravelAgencyBackend.Models;
+using TravelAgencyBackend.Domain.Entities;
+using TravelAgencyBackend.Presentation.Models;
+using FluentValidation;
+using System.ComponentModel.DataAnnotations;
 
-namespace TravelAgencyBackend.Controllers
+namespace TravelAgencyBackend.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IValidator<LoginModel> _validator;
 
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IValidator<LoginModel> validator)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _validator = validator; 
+
         }
 
         [HttpPost("register")]
@@ -23,7 +28,7 @@ namespace TravelAgencyBackend.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User
+                var user = new ApplicationUser
                 {
                     FirstName = model.FirstName,
                     LastName = model.LastName,
@@ -55,6 +60,12 @@ namespace TravelAgencyBackend.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
+            var validationResult = await _validator.ValidateAsync(model);
+            if (!validationResult.IsValid)
+            {
+               return BadRequest(validationResult.Errors);
+            }
+
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
             if (result.Succeeded)
             {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TravelAgencyBackend.Models;
+using TravelAgencyBackend.Domain.Entities;
 
-namespace TravelAgencyBackend.Data
+namespace TravelAgencyBackend.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
