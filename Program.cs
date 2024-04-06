@@ -1,9 +1,11 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TravelAgencyBackend.Data;
 using TravelAgencyBackend.Models;
+using TravelAgencyBackend.validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
+// Inject Fluent Validation
+builder.Services.AddScoped<IValidator<LoginModel>, LoginValidator>();
 
 // Add authorization services
 builder.Services.AddAuthorization();

@@ -25,9 +25,17 @@ namespace TravelAgencyBackend.Controllers
             {
                 var user = new User
                 {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
                     UserName = model.Email,
-                    Email = model.Email
-                    // Add other properties as needed
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    AddressLine1 = model.AddressLine1,
+                    AddressLine2 = model.AddressLine2,
+                    City = model.City,
+                    State = model.State,
+                    Country = model.Country,
+                    PostalCode = model.PostalCode
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
