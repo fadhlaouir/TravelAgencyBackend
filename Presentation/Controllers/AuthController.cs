@@ -4,6 +4,7 @@ using TravelAgencyBackend.Application.UseCases.Auth.Login;
 using TravelAgencyBackend.Application.UseCases.Auth.Register;
 using TravelAgencyBackend.Presentation.Models;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
 
 namespace TravelAgencyBackend.Presentation.Controllers
 {
@@ -31,12 +32,16 @@ namespace TravelAgencyBackend.Presentation.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterModel model)
         {
+            // Validate the registration request
             var validationResult = await _registerValidator.ValidateAsync(model);
+
+            // If the request is invalid, return the validation errors
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors);
             }
 
+            // If the request is valid, create a new RegisterRequest instance
             var registerRequest = new RegisterRequest
             {
                 FirstName = model.FirstName,
@@ -101,8 +106,11 @@ namespace TravelAgencyBackend.Presentation.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            // Add logout logic if needed
-            return Ok();
+
+            // Sign out the user 
+            await HttpContext.SignOutAsync();
+
+            return Ok(new { Message = "Logout successful." });
         }
     }
 }
