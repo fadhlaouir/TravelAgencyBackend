@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TravelAgencyBackend.Application.Interfaces.Services;
+using TravelAgencyBackend.Application.UseCases.Auth.Login;
+using TravelAgencyBackend.Application.UseCases.Auth.Register;
 using TravelAgencyBackend.Application.Validators;
 using TravelAgencyBackend.Domain.Entities;
 using TravelAgencyBackend.Infrastructure.Persistence;
@@ -32,6 +34,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Add authorization services
 builder.Services.AddAuthorization();
+
+// Add Use Case implementations
+builder.Services.AddScoped<ILoginUseCase, LoginUseCase>(); 
+builder.Services.AddScoped<IRegisterUseCase, RegisterUseCase>(); 
 
 // Add controller services
 builder.Services.AddControllers();

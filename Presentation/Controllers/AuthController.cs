@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using TravelAgencyBackend.Domain.Entities;
+using TravelAgencyBackend.Application.UseCases.Auth.Login;
+using TravelAgencyBackend.Application.UseCases.Auth.Register;
 using TravelAgencyBackend.Presentation.Models;
 using FluentValidation;
 
@@ -10,20 +11,19 @@ namespace TravelAgencyBackend.Presentation.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ILoginUseCase _loginUseCase;
+        private readonly IRegisterUseCase _registerUseCase;
         private readonly IValidator<LoginModel> _loginValidator;
         private readonly IValidator<RegisterModel> _registerValidator;
 
         public AuthController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            ILoginUseCase loginUseCase,
+            IRegisterUseCase registerUseCase,
             IValidator<LoginModel> loginValidator,
-            IValidator<RegisterModel> registerValidator
-        )
+            IValidator<RegisterModel> registerValidator)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _loginUseCase = loginUseCase;
+            _registerUseCase = registerUseCase;
             _loginValidator = loginValidator;
             _registerValidator = registerValidator;
         }
@@ -31,34 +31,18 @@ namespace TravelAgencyBackend.Presentation.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            // Validate the input model
             var validationResult = await _registerValidator.ValidateAsync(model);
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors);
             }
 
-            // Check if the email is null or empty
-            if (string.IsNullOrEmpty(model.Email))
-            {
-                return BadRequest(new { Message = "Email cannot be null or empty." });
-            }
-
-            // Check if a user with the same email already exists
-            var existingUser = await _userManager.FindByEmailAsync(model.Email);
-            if (existingUser != null)
-            {
-                // User with the same email already exists
-                return BadRequest(new { Message = "A user with the provided email already exists." });
-            }
-
-            // Create a new ApplicationUser instance
-            var user = new ApplicationUser
+            var registerRequest = new RegisterRequest
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                UserName = model.Email,
                 Email = model.Email,
+                Password = model.Password,
                 PhoneNumber = model.PhoneNumber,
                 AddressLine1 = model.AddressLine1,
                 AddressLine2 = model.AddressLine2,
@@ -70,21 +54,17 @@ namespace TravelAgencyBackend.Presentation.Controllers
                 PreferredLanguage = model.PreferredLanguage
             };
 
-            // Attempt to create the new user
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
+            var registerResponse = await _registerUseCase.Execute(registerRequest);
+
+            if (registerResponse.Success)
             {
-                return Ok(new { Message = "Registration successful." });
+                return Ok(new { Message = registerResponse.Message });
             }
             else
             {
-                // Handle other registration errors
-                var errorMessages = result.Errors.Select(e => e.Description);
-                return BadRequest(errorMessages);
+                return BadRequest(new { Message = registerResponse.Message });
             }
         }
-
-
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel model)
@@ -95,43 +75,29 @@ namespace TravelAgencyBackend.Presentation.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            // Check if email or password is null
-            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            var loginRequest = new LoginRequest
             {
-                return BadRequest(new { Message = "Email or password cannot be null or empty." });
-            }
+                Email = model.Email,
+                Password = model.Password
+            };
 
-            // Attempt to find user by email
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            var loginResponse = await _loginUseCase.Execute(loginRequest);
+
+            if (loginResponse.Success)
             {
-                return Unauthorized(new { Message = "Invalid email or password." });
-            }
-
-            // Attempt to sign in
-            var result = await _signInManager.PasswordSignInAsync(
-                model.Email,
-                model.Password,
-                false,
-                false
-            );
-
-            if (result.Succeeded)
-            {
-                return Ok(new { Message = "Login successful." });
+                return Ok(new { Message = loginResponse.Message });
             }
             else
             {
-                return Unauthorized(new { Message = "Invalid email or password." });
+                return Unauthorized(new { Message = loginResponse.Message });
             }
         }
-
 
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            // Add logout logic if needed
             return Ok();
         }
     }

@@ -2,5 +2,7 @@
 {
     public class LoginResponse
     {
+        public string Message { get; set; }
+        public bool Success { get; set; }
     }
 }

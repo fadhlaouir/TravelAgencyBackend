@@ -1,6 +1,9 @@
-﻿namespace TravelAgencyBackend.Application.UseCases.Auth.Login
+﻿using System.Threading.Tasks;
+
+namespace TravelAgencyBackend.Application.UseCases.Auth.Login
 {
-    public class ILoginUseCase
+    public interface ILoginUseCase
     {
+        Task<LoginResponse> Execute(LoginRequest request);
     }
 }

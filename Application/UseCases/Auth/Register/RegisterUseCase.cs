@@ -1,6 +1,9 @@
-﻿namespace TravelAgencyBackend.Application.UseCases.Auth.Register
+﻿using System.Threading.Tasks;
+
+namespace TravelAgencyBackend.Application.UseCases.Auth.Register
 {
-    public class RegisterUseCase
+    public interface IRegisterUseCase
     {
+        Task<RegisterResponse> Execute(RegisterRequest request);
     }
 }
