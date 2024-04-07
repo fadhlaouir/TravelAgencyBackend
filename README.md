@@ -73,25 +73,25 @@ TravelAgencyBackend/
 
 ## API Endpoints
 
-### Authentication
+### Authentication (Done)
 
 - `POST /api/auth/register`: Register a new user.
 - `POST /api/auth/login`: Login with existing credentials.
 - `POST /api/auth/logout`: Logout the current user.
 
-### Flight Booking
+### Flight Booking (In Progress..)
 
 - `GET /api/flights`: Get a list of available flights.
 - `GET /api/flights/{id}`: Get details of a specific flight by ID.
 - `POST /api/flights/book`: Book a flight.
 
-### Hotel Booking
+### Hotel Booking (In Progress..)
 
 - `GET /api/hotels`: Get a list of available hotels.
 - `GET /api/hotels/{id}`: Get details of a specific hotel by ID.
 - `POST /api/hotels/book`: Book a hotel.
 
-### Example Request
+### Example Request (In Progress..)
 
 Book a flight:
 ```
@@ -108,7 +108,7 @@ Authorization: Bearer {access_token}
 ```
 
 
-### Example Response
+### Example Response (In Progress..)
 
 ```
 HTTP/1.1 200 OK
@@ -123,7 +123,12 @@ Content-Type: application/json
 ## Dependencies
 
 - ASP.NET Core 8.0
-- Entity Framework Core 6.0
+- FluentValidation 9.11
+- JwtBearer 8.0.3
+- Entity Framework Core 8.0.3
+- OpenApi 8.0.3
+- SqlServer 8.0.3
+- EFCore.Tools 8.0.3
 - ASP.NET Core Identity 8.0
 - Swashbuckle.AspNetCore 6.4.0 (for Swagger documentation)
 
