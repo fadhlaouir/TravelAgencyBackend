@@ -81,11 +81,15 @@ namespace TravelAgencyBackend.Presentation.Controllers
                 Password = model.Password
             };
 
-            var loginResponse = await _loginUseCase.Execute(loginRequest);
+            var loginResponse = await _loginUseCase.Execute(new LoginRequest
+            {
+                Email = model.Email,
+                Password = model.Password
+            });
 
             if (loginResponse.Success)
             {
-                return Ok(new { Message = loginResponse.Message });
+                return Ok(new { Message = loginResponse.Message, Token = loginResponse.Token });
             }
             else
             {
